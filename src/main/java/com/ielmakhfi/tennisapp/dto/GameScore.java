@@ -12,7 +12,9 @@ public class GameScore {
     	GAME_SCORE.put(1,"15");
     	GAME_SCORE.put(2,"30");
     	GAME_SCORE.put(3,"40");
-    	GAME_SCORE.put(4,"WIN GAME");
+    	GAME_SCORE.put(4,"DEUCE");
+    	GAME_SCORE.put(5,"AVANTAGE");
+    	GAME_SCORE.put(6,"WIN GAME");
     }
     
     public static String getScoreValue(int key) {

@@ -1,59 +1,84 @@
 package com.ielmakhfi.tennisapp.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.ielmakhfi.tennisapp.dto.GameDto;
-import com.ielmakhfi.tennisapp.dto.PlayerDto;
+import com.ielmakhfi.tennisapp.dto.MatchDto;
 import com.ielmakhfi.tennisapp.service.GameService;
 
 @Service
 public class GameServiceImpl implements GameService {
-	
-	private static final String GAME_OVER = "The game is over";
+
+	private static final String WIN_GAME = "WIN GAME";
 	private static final String WIN = "Player %s win the game";
 	
 	@Override
-	public void addPoint(GameDto game,boolean isFirstPlayerWin) {
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
+	public void addPoint(MatchDto match,GameDto game,boolean isFirstPlayerWin) {
 		if(isFirstPlayerWin) {
-			firstPlayer.setGameScore(firstPlayer.getGameScore() + 1);
+			List<Integer> newScore = getNewPlayersScore(game.getFirstPlayerScore(),game.getSecondPlayerScore());
+			game.setFirstPlayerScore(newScore.get(0));
+			game.setSecondPlayerScore(newScore.get(1));
 		} else {
-			secondPlayer.setGameScore(secondPlayer.getGameScore() + 1);
+			List<Integer> newScore = getNewPlayersScore(game.getSecondPlayerScore(),game.getFirstPlayerScore());
+			game.setSecondPlayerScore(newScore.get(0));
+			game.setFirstPlayerScore(newScore.get(1));
 		}
-		game.setGameOver(checkIfGameOver(game));
+		updateGameWinnerIfGameOver(match,game);
+	}
+	
+	private List<Integer> getNewPlayersScore(int winnerScore, int loserScore) {
+		// if the player wins we go from key(3) "40" to key(6) "WIN GAME" , 
+		if(winnerScore == 3 && loserScore < 3) {
+			winnerScore+=3;
+		// duces rules , both players have "DEUCE" score	
+		} else if(winnerScore == 2 && loserScore == 3) {
+			winnerScore+=2;
+			loserScore+=1;
+		// demotion management from "ADVANTAGE" to "DEUCE"
+		} else if(winnerScore == 4 && loserScore == 5) {
+			loserScore-=1;
+		} else {
+			winnerScore+=1;;
+		}
+		return Arrays.asList(winnerScore,loserScore);
 	}
 
 	@Override
-	public void manageGameOver(GameDto game) {
-		displayGameOver();
+	public void manageGameOver(MatchDto match,GameDto game) {
 		displayWinner(game);
-		initGameScore(game);
+		match.getGames().add(game);
 	}
 	
-	private void initGameScore(GameDto game) {
-		game.getFirstPlayer().setGameScore(0);
-		game.getSecondPlayer().setGameScore(0);
-	}
-	
-	private PlayerDto getWinner(GameDto game) {
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
-		return firstPlayer.getGameScore() > secondPlayer.getGameScore() ? firstPlayer : secondPlayer; 
-	}
-	
-	private void displayGameOver() {
-		System.out.println(GAME_OVER);
+	@Override
+	public void displayScoreGame(MatchDto match, GameDto game) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Game score : ( ");
+		sb.append(match.getFirstPlayerName());
+		sb.append(" : ");
+		sb.append(game.showFirstPlayerScoreValue());
+		sb.append(" / ");
+		sb.append(match.getSecondPlayerName());
+		sb.append(" : ");
+		sb.append(game.showSecondPlayerScoreValue());
+		sb.append(" )");
+		System.out.println(sb.toString());
 	}
 	
 	private void displayWinner(GameDto game) {
-		System.out.println(String.format(WIN, getWinner(game).getName()));
+		System.out.println(String.format(WIN, game.getWinnerName()));
 	}
 	
-	private boolean checkIfGameOver(GameDto game) {
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
-		return firstPlayer.getGameScore() == 4 || secondPlayer.getGameScore() == 4;
+	private void updateGameWinnerIfGameOver(MatchDto match,GameDto game) {
+		String firstPlayerScoreValue = game.showFirstPlayerScoreValue();
+		String secondPlayerScoreValue = game.showSecondPlayerScoreValue();
+		if(firstPlayerScoreValue.equals(WIN_GAME)) {
+			game.setWinnerName(match.getFirstPlayerName());
+		} else if(secondPlayerScoreValue.equals(WIN_GAME)) {
+			game.setWinnerName(match.getSecondPlayerName());
+		}
 	}
 	
 }
