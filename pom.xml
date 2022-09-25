@@ -14,7 +14,7 @@
 	<name>TennisApp</name>
 	<description>This Kata is about implementing a tennis game</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
