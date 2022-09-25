@@ -14,12 +14,10 @@ import com.ielmakhfi.tennisapp.service.GameService;
 
 @SpringBootApplication
 public class TennisAppApplication {
-
-	private static GameService gameSvc;
 	
+	private static GameService gameSvc;
 	@Autowired
 	private GameService gameService;
-
 	@PostConstruct
 	public void init() {
 		TennisAppApplication.gameSvc = gameService;
@@ -51,8 +49,8 @@ public class TennisAppApplication {
             gameSvc.addPoint(game,playerWhoWinPoint.equals("1"));
             game.displayScore();
         }
+        System.out.println("The game is over");
         gameSvc.manageGameOver(game);
-        
 	}
 
 }

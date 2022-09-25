@@ -14,6 +14,7 @@ import com.ielmakhfi.tennisapp.service.GameService;
 class GameTests {
 
 	public static final String WIN_GAME = "WIN GAME";
+	public static final String DEUCE = "DEUCE";
 	
 	@Autowired
 	public GameService gameSvc;
@@ -47,5 +48,37 @@ class GameTests {
         String firstPlayerScore = game.getFirstPlayer().showGameScore();
         assertEquals(firstPlayerScore,WIN_GAME);
     }
+	
+	@Test
+	public void testDeuceRule()
+	{
+		GameDto game = new GameDto("player1", "player2");
+		game.getFirstPlayer().setGameScore(3); // score game => 40 -- 0
+		game.getSecondPlayer().setGameScore(2); // score game => 40 -- 30
+    	gameSvc.addPoint(game, false); // player 2 win point => DEUCE -- DEUCE
+   
+    	// check if both players have "DEUCE" score
+        String firstPlayerScore = game.getFirstPlayer().showGameScore();
+        String secondPlayerScore = game.getSecondPlayer().showGameScore();
+        assertEquals(firstPlayerScore,DEUCE);
+        assertEquals(secondPlayerScore,DEUCE);
+    }
+	
+	@Test
+	public void testWinWithAdvantage()
+	{
+		GameDto game = new GameDto("player1", "player2");
+		game.getFirstPlayer().setGameScore(5); // score game => ADVANTAGE -- 0
+		game.getSecondPlayer().setGameScore(4); // score game => ADVANTAGE -- DEUCE
+    	gameSvc.addPoint(game, true); // player 1 win point => WIN GAME -- DEUCE
+   
+    	// we check if game was over
+        assertTrue(game.isGameOver());
+        // we check if player one win the game
+        String firstPlayerScore = game.getFirstPlayer().showGameScore();
+        assertEquals(firstPlayerScore,WIN_GAME);
+    }
+	
+	
 
 }
