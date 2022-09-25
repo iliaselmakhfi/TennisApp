@@ -14,9 +14,9 @@ public class MatchServiceImpl implements MatchService {
 	public void updateWinnerGameIfGameOver(MatchDto match) {
 		long firstPlayerSetScore = match.getFirstPlayerSetScore();
 		long secondPlayerSetScore = match.getSecondPlayerSetScore();
-		if((firstPlayerSetScore == 6 && secondPlayerSetScore <= 4 ) || firstPlayerSetScore == 7 ) {
+		if((firstPlayerSetScore == 6 && secondPlayerSetScore <= 4 ) || ((firstPlayerSetScore-secondPlayerSetScore) == 2 && firstPlayerSetScore > 6 )) {
 			match.setWinnerName(match.getFirstPlayerName());
-		} else if((firstPlayerSetScore <= 4  && secondPlayerSetScore == 6 ) || secondPlayerSetScore == 7 ) {
+		} else if((firstPlayerSetScore <= 4  && secondPlayerSetScore == 6 ) || ((secondPlayerSetScore-firstPlayerSetScore) == 2 && secondPlayerSetScore > 6 ) ) {
 			match.setWinnerName(match.getSecondPlayerName());
 		}
 	}

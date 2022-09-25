@@ -60,4 +60,50 @@ class MatchTests {
 		// check if winner name not defined
 		assertNull(match.getWinnerName());
 	}
+	
+	@Test
+    public void testNotWinningMatchTieBreak()
+    {
+		MatchDto match = new MatchDto("player1", "player2");
+		GameDto game = new GameDto();
+		
+		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
+		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		for(int i=0;i<7;i++) {
+			match.getGames().add(game);				// score match =>  7 -- 0
+		}
+		
+		GameDto game2 = new GameDto();
+		game2.setSecondPlayerScore(3); 				// score game => 0 -- 40
+		gameSvc.addPoint(match,game2, false);         // score game => 0 -- WIN GAME
+		for(int i=0;i<6;i++) {
+			match.getGames().add(game2);				// score match =>  7 -- 6
+		}
+		matchSvc.updateWinnerGameIfGameOver(match);
+		// check if winner name not defined
+		assertNull(match.getWinnerName());
+    }
+    
+	@Test
+    public void testWinningMatchTieBreak()
+    {
+		MatchDto match = new MatchDto("player1", "player2");
+		GameDto game = new GameDto();
+		
+		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
+		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		for(int i=0;i<8;i++) {
+			match.getGames().add(game);				// score match =>  8 -- 0
+		}
+		
+		GameDto game2 = new GameDto();
+		game2.setSecondPlayerScore(3); 				// score game => 0 -- 40
+		gameSvc.addPoint(match,game2, false);         // score game => 0 -- WIN GAME
+		for(int i=0;i<6;i++) {
+			match.getGames().add(game2);				// score match =>  8 -- 6
+		}
+		matchSvc.updateWinnerGameIfGameOver(match);
+		// check if player1 win the match
+		assertEquals(match.getWinnerName(),match.getFirstPlayerName());
+    }
 }
