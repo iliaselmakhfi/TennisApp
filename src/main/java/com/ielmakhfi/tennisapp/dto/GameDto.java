@@ -2,51 +2,46 @@ package com.ielmakhfi.tennisapp.dto;
 
 public class GameDto {
 	
-	private PlayerDto firstPlayer;
-	private PlayerDto secondPlayer;
-	private boolean gameOver;
+	private int firstPlayerScore;
+	private int secondPlayerScore;
+	private String winnerName;
 	
-	public GameDto(String firstPlayerName, String secondPlayerName) {
-		this.firstPlayer = new PlayerDto(firstPlayerName,0);
-		this.secondPlayer = new PlayerDto(secondPlayerName,0);
-		this.gameOver = false;
+	public GameDto() {
+		this.firstPlayerScore = 0;
+		this.secondPlayerScore = 0;
+		this.winnerName = null;
 	}
 
-	public PlayerDto getFirstPlayer() {
-		return firstPlayer;
+	public int getFirstPlayerScore() {
+		return firstPlayerScore;
 	}
 
-	public void setFirstPlayer(PlayerDto firstPlayer) {
-		this.firstPlayer = firstPlayer;
+	public void setFirstPlayerScore(int firstPlayerScore) {
+		this.firstPlayerScore = firstPlayerScore;
 	}
 
-	public PlayerDto getSecondPlayer() {
-		return secondPlayer;
+	public int getSecondPlayerScore() {
+		return secondPlayerScore;
 	}
 
-	public void setSecondPlayer(PlayerDto secondPlayer) {
-		this.secondPlayer = secondPlayer;
+	public void setSecondPlayerScore(int secondPlayerScore) {
+		this.secondPlayerScore = secondPlayerScore;
 	}
 
-	public boolean isGameOver() {
-		return gameOver;
+	public String getWinnerName() {
+		return winnerName;
 	}
 
-	public void setGameOver(boolean gameOver) {
-		this.gameOver = gameOver;
+	public void setWinnerName(String winnerName) {
+		this.winnerName = winnerName;
 	}
-
-	public void displayScore() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Game score : ( ");
-		sb.append(this.getFirstPlayer().getName());
-		sb.append(" : ");
-		sb.append(this.getFirstPlayer().showGameScore());
-		sb.append(" / ");
-		sb.append(this.getSecondPlayer().getName());
-		sb.append(" : ");
-		sb.append(this.getSecondPlayer().showGameScore());
-		sb.append(" )");
-		System.out.println(sb.toString());
+	
+	public String showFirstPlayerScoreValue() {
+		return GameScore.getScoreValue(firstPlayerScore);
 	}
+	
+	public String showSecondPlayerScoreValue() {
+		return GameScore.getScoreValue(secondPlayerScore);
+	}
+	
 }

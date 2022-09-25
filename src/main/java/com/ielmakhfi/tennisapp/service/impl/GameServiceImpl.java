@@ -1,9 +1,12 @@
 package com.ielmakhfi.tennisapp.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.ielmakhfi.tennisapp.dto.GameDto;
-import com.ielmakhfi.tennisapp.dto.PlayerDto;
+import com.ielmakhfi.tennisapp.dto.MatchDto;
 import com.ielmakhfi.tennisapp.service.GameService;
 
 @Service
@@ -13,63 +16,69 @@ public class GameServiceImpl implements GameService {
 	private static final String WIN = "Player %s win the game";
 	
 	@Override
-	public void addPoint(GameDto game,boolean isFirstPlayerWin) {
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
+	public void addPoint(MatchDto match,GameDto game,boolean isFirstPlayerWin) {
 		if(isFirstPlayerWin) {
-			managePlayersScore(firstPlayer,secondPlayer);
+			List<Integer> newScore = getNewPlayersScore(game.getFirstPlayerScore(),game.getSecondPlayerScore());
+			game.setFirstPlayerScore(newScore.get(0));
+			game.setSecondPlayerScore(newScore.get(1));
 		} else {
-			managePlayersScore(secondPlayer,firstPlayer);
+			List<Integer> newScore = getNewPlayersScore(game.getSecondPlayerScore(),game.getFirstPlayerScore());
+			game.setSecondPlayerScore(newScore.get(0));
+			game.setFirstPlayerScore(newScore.get(1));
 		}
-		game.setGameOver(checkIfGameOver(game));
+		updateGameWinnerIfGameOver(match,game);
 	}
 	
-	private void managePlayersScore(PlayerDto winner, PlayerDto loser) {
-		int winnerScore = winner.getGameScore();
-		int loserScore = loser.getGameScore();
+	private List<Integer> getNewPlayersScore(int winnerScore, int loserScore) {
 		// if the player wins we go from key(3) "40" to key(6) "WIN GAME" , 
 		if(winnerScore == 3 && loserScore < 3) {
-			winner.setGameScore(winnerScore + 3);
+			winnerScore+=3;
 		// duces rules , both players have "DEUCE" score	
 		} else if(winnerScore == 2 && loserScore == 3) {
-			winner.setGameScore(winnerScore + 2);
-			loser.setGameScore(loserScore + 1);
+			winnerScore+=2;
+			loserScore+=1;
 		// demotion management from "ADVANTAGE" to "DEUCE"
 		} else if(winnerScore == 4 && loserScore == 5) {
-			loser.setGameScore(loserScore - 1);
+			loserScore-=1;
 		} else {
-			winner.setGameScore(winnerScore + 1);
+			winnerScore+=1;;
 		}
+		return Arrays.asList(winnerScore,loserScore);
 	}
 
 	@Override
-	public void manageGameOver(GameDto game) {
+	public void manageGameOver(MatchDto match,GameDto game) {
 		displayWinner(game);
-		initGameScore(game);
+		match.getGames().add(game);
 	}
 	
-	private void initGameScore(GameDto game) {
-		game.getFirstPlayer().setGameScore(0);
-		game.getSecondPlayer().setGameScore(0);
-	}
-	
-	private PlayerDto getWinner(GameDto game) {
-		if(!game.isGameOver()) {
-			return null;
-		}
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
-		return firstPlayer.getGameScore() > secondPlayer.getGameScore() ? firstPlayer : secondPlayer; 
+	@Override
+	public void displayScoreGame(MatchDto match, GameDto game) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Game score : ( ");
+		sb.append(match.getFirstPlayerName());
+		sb.append(" : ");
+		sb.append(game.showFirstPlayerScoreValue());
+		sb.append(" / ");
+		sb.append(match.getSecondPlayerName());
+		sb.append(" : ");
+		sb.append(game.showSecondPlayerScoreValue());
+		sb.append(" )");
+		System.out.println(sb.toString());
 	}
 	
 	private void displayWinner(GameDto game) {
-		System.out.println(String.format(WIN, getWinner(game).getName()));
+		System.out.println(String.format(WIN, game.getWinnerName()));
 	}
 	
-	private boolean checkIfGameOver(GameDto game) {
-		PlayerDto firstPlayer = game.getFirstPlayer();
-		PlayerDto secondPlayer = game.getSecondPlayer();
-		return firstPlayer.showGameScore().equals(WIN_GAME) || secondPlayer.showGameScore().equals(WIN_GAME);
+	private void updateGameWinnerIfGameOver(MatchDto match,GameDto game) {
+		String firstPlayerScoreValue = game.showFirstPlayerScoreValue();
+		String secondPlayerScoreValue = game.showSecondPlayerScoreValue();
+		if(firstPlayerScoreValue.equals(WIN_GAME)) {
+			game.setWinnerName(match.getFirstPlayerName());
+		} else if(secondPlayerScoreValue.equals(WIN_GAME)) {
+			game.setWinnerName(match.getSecondPlayerName());
+		}
 	}
 	
 }
