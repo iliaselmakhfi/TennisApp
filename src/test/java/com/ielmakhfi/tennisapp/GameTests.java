@@ -83,7 +83,5 @@ class GameTests {
         String firstPlayerScore = game.showFirstPlayerScoreValue();
         assertEquals(firstPlayerScore,WIN_GAME);
     }
-	
-	
 
 }
