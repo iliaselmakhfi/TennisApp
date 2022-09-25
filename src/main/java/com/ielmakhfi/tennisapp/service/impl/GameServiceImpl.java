@@ -8,8 +8,8 @@ import com.ielmakhfi.tennisapp.service.GameService;
 
 @Service
 public class GameServiceImpl implements GameService {
-	
-	private static final String GAME_OVER = "The game is over";
+
+	private static final String WIN_GAME = "WIN GAME";
 	private static final String WIN = "Player %s win the game";
 	
 	@Override
@@ -17,16 +17,33 @@ public class GameServiceImpl implements GameService {
 		PlayerDto firstPlayer = game.getFirstPlayer();
 		PlayerDto secondPlayer = game.getSecondPlayer();
 		if(isFirstPlayerWin) {
-			firstPlayer.setGameScore(firstPlayer.getGameScore() + 1);
+			managePlayersScore(firstPlayer,secondPlayer);
 		} else {
-			secondPlayer.setGameScore(secondPlayer.getGameScore() + 1);
+			managePlayersScore(secondPlayer,firstPlayer);
 		}
 		game.setGameOver(checkIfGameOver(game));
+	}
+	
+	private void managePlayersScore(PlayerDto winner, PlayerDto loser) {
+		int winnerScore = winner.getGameScore();
+		int loserScore = loser.getGameScore();
+		// if the player wins we go from key(3) "40" to key(6) "WIN GAME" , 
+		if(winnerScore == 3 && loserScore < 3) {
+			winner.setGameScore(winnerScore + 3);
+		// duces rules , both players have "DEUCE" score	
+		} else if(winnerScore == 2 && loserScore == 3) {
+			winner.setGameScore(winnerScore + 2);
+			loser.setGameScore(loserScore + 1);
+		// demotion management from "ADVANTAGE" to "DEUCE"
+		} else if(winnerScore == 4 && loserScore == 5) {
+			loser.setGameScore(loserScore - 1);
+		} else {
+			winner.setGameScore(winnerScore + 1);
+		}
 	}
 
 	@Override
 	public void manageGameOver(GameDto game) {
-		displayGameOver();
 		displayWinner(game);
 		initGameScore(game);
 	}
@@ -37,13 +54,12 @@ public class GameServiceImpl implements GameService {
 	}
 	
 	private PlayerDto getWinner(GameDto game) {
+		if(!game.isGameOver()) {
+			return null;
+		}
 		PlayerDto firstPlayer = game.getFirstPlayer();
 		PlayerDto secondPlayer = game.getSecondPlayer();
 		return firstPlayer.getGameScore() > secondPlayer.getGameScore() ? firstPlayer : secondPlayer; 
-	}
-	
-	private void displayGameOver() {
-		System.out.println(GAME_OVER);
 	}
 	
 	private void displayWinner(GameDto game) {
@@ -53,7 +69,7 @@ public class GameServiceImpl implements GameService {
 	private boolean checkIfGameOver(GameDto game) {
 		PlayerDto firstPlayer = game.getFirstPlayer();
 		PlayerDto secondPlayer = game.getSecondPlayer();
-		return firstPlayer.getGameScore() == 4 || secondPlayer.getGameScore() == 4;
+		return firstPlayer.showGameScore().equals(WIN_GAME) || secondPlayer.showGameScore().equals(WIN_GAME);
 	}
 	
 }
