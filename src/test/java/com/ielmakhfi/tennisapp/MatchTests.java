@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.ielmakhfi.tennisapp.dto.GameDto;
+import com.ielmakhfi.tennisapp.dto.SetGameDto;
 import com.ielmakhfi.tennisapp.dto.MatchDto;
-import com.ielmakhfi.tennisapp.service.GameService;
+import com.ielmakhfi.tennisapp.service.SetService;
 import com.ielmakhfi.tennisapp.service.MatchService;
 
 @SpringBootTest
@@ -19,91 +19,91 @@ class MatchTests {
 	public static final String DEUCE = "DEUCE";
 	
 	@Autowired
-	public GameService gameSvc;
+	public SetService setGameSvc;
 	@Autowired
 	public MatchService matchSvc;
 	
 	@Test
 	public void testAddSetPoint() {
 		MatchDto match = new MatchDto("player1", "player2");
-		GameDto game = new GameDto();
-		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
-		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
-		match.getGames().add(game);					// score match =>  1 -- 0
-		assertEquals(match.getFirstPlayerSetScore(),1);
+		SetGameDto setgame = new SetGameDto();
+		setgame.setFirstPlayerScore(3); 					// score set => 40 -- 0
+		setGameSvc.addPoint(match,setgame, true);         	// score set => WIN GAME -- 0
+		match.getSetGames().add(setgame);					// score match =>  1 -- 0
+		assertEquals(match.getFirstPlayerMatchScore(),1);
 	}
 
 	@Test
 	public void testUpdatingWinnerWhenGameOver() {
 		MatchDto match = new MatchDto("player1", "player2");
-		GameDto game = new GameDto();
-		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
-		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		SetGameDto setgame = new SetGameDto();
+		setgame.setFirstPlayerScore(3); 					// score set => 40 -- 0
+		setGameSvc.addPoint(match,setgame, true);        	// score set => WIN GAME -- 0
 		for(int i=0;i<6;i++) {
-			match.getGames().add(game);				// score match =>  6 -- 0
+			match.getSetGames().add(setgame);				// score match =>  6 -- 0
 		}
-		matchSvc.updateWinnerGameIfGameOver(match);
+		matchSvc.updateWinnerMatchIfGameOver(match);
 		// check if player1 win the match
-		assertEquals(match.getWinnerName(),match.getFirstPlayerName());
+		assertEquals(match.getWinner().getName(),match.getFirstPlayer().getName());
 	}
 	
 	@Test
 	public void testNotUpdatingWinnerWhenGameItNotOver() {
 		MatchDto match = new MatchDto("player1", "player2");
-		GameDto game = new GameDto();
-		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
-		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		SetGameDto setgame = new SetGameDto();
+		setgame.setFirstPlayerScore(3); 					// score set => 40 -- 0
+		setGameSvc.addPoint(match,setgame, true);         	// score set => WIN GAME -- 0
 		for(int i=0;i<5;i++) {
-			match.getGames().add(game);				// score match =>  5 -- 0
+			match.getSetGames().add(setgame);				// score match =>  5 -- 0
 		}
-		matchSvc.updateWinnerGameIfGameOver(match);
+		matchSvc.updateWinnerMatchIfGameOver(match);
 		// check if winner name not defined
-		assertNull(match.getWinnerName());
+		assertNull(match.getWinner().getName());
 	}
 	
 	@Test
     public void testNotWinningMatchTieBreak()
     {
 		MatchDto match = new MatchDto("player1", "player2");
-		GameDto game = new GameDto();
+		SetGameDto setgame = new SetGameDto();
 		
-		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
-		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		setgame.setFirstPlayerScore(3); 					// score set => 40 -- 0
+		setGameSvc.addPoint(match,setgame, true);         	// score set => WIN GAME -- 0
 		for(int i=0;i<7;i++) {
-			match.getGames().add(game);				// score match =>  7 -- 0
+			match.getSetGames().add(setgame);				// score match =>  7 -- 0
 		}
 		
-		GameDto game2 = new GameDto();
-		game2.setSecondPlayerScore(3); 				// score game => 0 -- 40
-		gameSvc.addPoint(match,game2, false);         // score game => 0 -- WIN GAME
+		SetGameDto setGame2 = new SetGameDto();
+		setGame2.setSecondPlayerScore(3); 					// score set => 0 -- 40
+		setGameSvc.addPoint(match,setGame2, false);         // score set => 0 -- WIN GAME
 		for(int i=0;i<6;i++) {
-			match.getGames().add(game2);				// score match =>  7 -- 6
+			match.getSetGames().add(setGame2);				// score match =>  7 -- 6
 		}
-		matchSvc.updateWinnerGameIfGameOver(match);
+		matchSvc.updateWinnerMatchIfGameOver(match);
 		// check if winner name not defined
-		assertNull(match.getWinnerName());
+		assertNull(match.getWinner().getName());
     }
     
 	@Test
     public void testWinningMatchTieBreak()
     {
 		MatchDto match = new MatchDto("player1", "player2");
-		GameDto game = new GameDto();
+		SetGameDto setGame = new SetGameDto();
 		
-		game.setFirstPlayerScore(3); 				// score game => 40 -- 0
-		gameSvc.addPoint(match,game, true);         // score game => WIN GAME -- 0
+		setGame.setFirstPlayerScore(3); 				    // score set => 40 -- 0
+		setGameSvc.addPoint(match,setGame, true);           // score set => WIN GAME -- 0
 		for(int i=0;i<8;i++) {
-			match.getGames().add(game);				// score match =>  8 -- 0
+			match.getSetGames().add(setGame);				// score match =>  8 -- 0
 		}
 		
-		GameDto game2 = new GameDto();
-		game2.setSecondPlayerScore(3); 				// score game => 0 -- 40
-		gameSvc.addPoint(match,game2, false);         // score game => 0 -- WIN GAME
+		SetGameDto setGame2 = new SetGameDto();
+		setGame2.setSecondPlayerScore(3); 					// score set => 0 -- 40
+		setGameSvc.addPoint(match,setGame2, false);         // score set => 0 -- WIN GAME
 		for(int i=0;i<6;i++) {
-			match.getGames().add(game2);				// score match =>  8 -- 6
+			match.getSetGames().add(setGame2);				// score match =>  8 -- 6
 		}
-		matchSvc.updateWinnerGameIfGameOver(match);
+		matchSvc.updateWinnerMatchIfGameOver(match);
 		// check if player1 win the match
-		assertEquals(match.getWinnerName(),match.getFirstPlayerName());
+		assertEquals(match.getWinner().getName(),match.getFirstPlayer().getName());
     }
 }

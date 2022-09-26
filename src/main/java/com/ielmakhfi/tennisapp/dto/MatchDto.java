@@ -5,56 +5,56 @@ import java.util.List;
 
 public class MatchDto {
 	
-	private String firstPlayerName;
-	private String secondPlayerName;
-	private List<GameDto> games;
-	private String winnerName;
+	private PlayerDto firstPlayer;
+	private PlayerDto secondPlayer;
+	private List<SetGameDto> setGames;
+	private PlayerDto winner;
 	
 	public MatchDto(String firstPlayerName, String secondPlayerName) {
-		this.firstPlayerName = firstPlayerName;
-		this.secondPlayerName = secondPlayerName;
-		this.games = new ArrayList<>();
-		this.winnerName = null;
+		this.firstPlayer = new PlayerDto(firstPlayerName);
+		this.secondPlayer = new PlayerDto(secondPlayerName);
+		this.setGames = new ArrayList<>();
+		this.winner = null;
 	}
 
-	public String getFirstPlayerName() {
-		return firstPlayerName;
+	public PlayerDto getFirstPlayer() {
+		return firstPlayer;
 	}
 
-	public void setFirstPlayerName(String firstPlayerName) {
-		this.firstPlayerName = firstPlayerName;
+	public void setFirstPlayer(PlayerDto firstPlayerName) {
+		this.firstPlayer = firstPlayerName;
 	}
 
-	public String getSecondPlayerName() {
-		return secondPlayerName;
+	public PlayerDto getSecondPlayer() {
+		return secondPlayer;
 	}
 
-	public void setSecondPlayerName(String secondPlayerName) {
-		this.secondPlayerName = secondPlayerName;
+	public void setSecondPlayer(PlayerDto secondPlayer) {
+		this.secondPlayer = secondPlayer;
 	}
 
-	public String getWinnerName() {
-		return winnerName;
+	public PlayerDto getWinner() {
+		return winner;
 	}
 
-	public void setWinnerName(String winnerName) {
-		this.winnerName = winnerName;
+	public void setWinner(PlayerDto winner) {
+		this.winner = winner;
 	}
 
-	public List<GameDto> getGames() {
-		return games;
+	public List<SetGameDto> getSetGames() {
+		return setGames;
 	}
 
-	public void setGames(List<GameDto> games) {
-		this.games = games;
+	public void setSetGames(List<SetGameDto> setGames) {
+		this.setGames = setGames;
 	}
 	
-	public long getFirstPlayerSetScore() {
-		return games.stream().filter(g -> g.getWinnerName().equals(firstPlayerName)).count();
+	public long getFirstPlayerMatchScore() {
+		return setGames.stream().filter(g -> g.getWinner().getName().equals(firstPlayer.getName())).count();
 	}
 	
-	public long getSecondPlayerSetScore() {
-		return games.stream().filter(g -> g.getWinnerName().equals(secondPlayerName)).count();
+	public long getSecondPlayerMatchScore() {
+		return setGames.stream().filter(g -> g.getWinner().getName().equals(secondPlayer.getName())).count();
 	}
 
 }

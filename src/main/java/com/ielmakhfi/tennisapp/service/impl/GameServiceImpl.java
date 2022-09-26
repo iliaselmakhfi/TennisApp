@@ -5,28 +5,28 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ielmakhfi.tennisapp.dto.GameDto;
+import com.ielmakhfi.tennisapp.dto.SetGameDto;
 import com.ielmakhfi.tennisapp.dto.MatchDto;
-import com.ielmakhfi.tennisapp.service.GameService;
+import com.ielmakhfi.tennisapp.service.SetService;
 
 @Service
-public class GameServiceImpl implements GameService {
+public class GameServiceImpl implements SetService {
 
 	private static final String WIN_GAME = "WIN GAME";
-	private static final String WIN = "Player %s win the game";
+	private static final String WIN = "Player %s win the set";
 	
 	@Override
-	public void addPoint(MatchDto match,GameDto game,boolean isFirstPlayerWin) {
+	public void addPoint(MatchDto match,SetGameDto setGame,boolean isFirstPlayerWin) {
 		if(isFirstPlayerWin) {
-			List<Integer> newScore = getNewPlayersScore(game.getFirstPlayerScore(),game.getSecondPlayerScore());
-			game.setFirstPlayerScore(newScore.get(0));
-			game.setSecondPlayerScore(newScore.get(1));
+			List<Integer> newScore = getNewPlayersScore(setGame.getFirstPlayerScore(),setGame.getSecondPlayerScore());
+			setGame.setFirstPlayerScore(newScore.get(0));
+			setGame.setSecondPlayerScore(newScore.get(1));
 		} else {
-			List<Integer> newScore = getNewPlayersScore(game.getSecondPlayerScore(),game.getFirstPlayerScore());
-			game.setSecondPlayerScore(newScore.get(0));
-			game.setFirstPlayerScore(newScore.get(1));
+			List<Integer> newScore = getNewPlayersScore(setGame.getSecondPlayerScore(),setGame.getFirstPlayerScore());
+			setGame.setSecondPlayerScore(newScore.get(0));
+			setGame.setFirstPlayerScore(newScore.get(1));
 		}
-		updateGameWinnerIfGameOver(match,game);
+		updateGameWinnerIfGameOver(match,setGame);
 	}
 	
 	private List<Integer> getNewPlayersScore(int winnerScore, int loserScore) {
@@ -47,37 +47,37 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public void manageGameOver(MatchDto match,GameDto game) {
+	public void manageGameOver(MatchDto match,SetGameDto game) {
 		displayWinner(game);
-		match.getGames().add(game);
+		match.getSetGames().add(game);
 	}
 	
 	@Override
-	public void displayScoreGame(MatchDto match, GameDto game) {
+	public void displayScoreSet(MatchDto match, SetGameDto game) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Game score : ( ");
-		sb.append(match.getFirstPlayerName());
+		sb.append("Set score : ( ");
+		sb.append(match.getFirstPlayer().getName());
 		sb.append(" : ");
 		sb.append(game.showFirstPlayerScoreValue());
 		sb.append(" / ");
-		sb.append(match.getSecondPlayerName());
+		sb.append(match.getSecondPlayer().getName());
 		sb.append(" : ");
 		sb.append(game.showSecondPlayerScoreValue());
 		sb.append(" )");
 		System.out.println(sb.toString());
 	}
 	
-	private void displayWinner(GameDto game) {
-		System.out.println(String.format(WIN, game.getWinnerName()));
+	private void displayWinner(SetGameDto game) {
+		System.out.println(String.format(WIN, game.getWinner().getName()));
 	}
 	
-	private void updateGameWinnerIfGameOver(MatchDto match,GameDto game) {
-		String firstPlayerScoreValue = game.showFirstPlayerScoreValue();
-		String secondPlayerScoreValue = game.showSecondPlayerScoreValue();
+	private void updateGameWinnerIfGameOver(MatchDto match,SetGameDto setGame) {
+		String firstPlayerScoreValue = setGame.showFirstPlayerScoreValue();
+		String secondPlayerScoreValue = setGame.showSecondPlayerScoreValue();
 		if(firstPlayerScoreValue.equals(WIN_GAME)) {
-			game.setWinnerName(match.getFirstPlayerName());
+			setGame.setWinner(match.getFirstPlayer());
 		} else if(secondPlayerScoreValue.equals(WIN_GAME)) {
-			game.setWinnerName(match.getSecondPlayerName());
+			setGame.setWinner(match.getSecondPlayer());
 		}
 	}
 	
