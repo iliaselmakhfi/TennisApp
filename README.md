@@ -1,6 +1,6 @@
 # How to run the Kata Tennis Game
 
-To run the game, you need to download the project, unzip it, and follow these steps:
+To run the game, you need to clone de project, and follow these steps:
 
 1. Open terminal
 1. Access the game folder :
