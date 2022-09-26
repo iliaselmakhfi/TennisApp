@@ -17,16 +17,16 @@ import com.ielmakhfi.tennisapp.service.MatchService;
 @SpringBootApplication
 public class TennisAppApplication {
 	
-	private static SetService gameSvc;
+	private static SetService setSvc;
 	private static MatchService matchSvc;
 	@Autowired
-	private SetService gameService;
+	private SetService setService;
 	@Autowired
 	private MatchService matchService;
   
 	@PostConstruct
 	public void init() {
-		TennisAppApplication.gameSvc = gameService;
+		TennisAppApplication.setSvc = setService;
 		TennisAppApplication.matchSvc = matchService;
 	}
 	
@@ -47,7 +47,7 @@ public class TennisAppApplication {
 			SetGameDto setGame = new SetGameDto();
 			
 			matchSvc.displayMatchScore(match);
-			gameSvc.displayScoreSet(match,setGame);
+			setSvc.displayScoreSet(match,setGame);
 	        
 	        while(setGame.getWinner() == null) {
 	        	System.out.println("Number of player who win a point");
@@ -58,11 +58,11 @@ public class TennisAppApplication {
 	            	System.out.println("the value entered is not correct, try again :");
 	            	playerWhoWinPoint = new Scanner(System.in).nextLine().replaceAll("\\s+", "");
 	            }
-	            gameSvc.addPoint(match,setGame,playerWhoWinPoint.equals("1"));
-	            gameSvc.displayScoreSet(match,setGame);
+	            setSvc.addPoint(match,setGame,playerWhoWinPoint.equals("1"));
+	            setSvc.displayScoreSet(match,setGame);
 	        }
 	        System.out.println("The game is over");
-	        gameSvc.manageGameOver(match,setGame);
+	        setSvc.manageGameOver(match,setGame);
 	        matchSvc.updateWinnerMatchIfGameOver(match);
         }
         System.out.println("=========== THE SET/MATCH IS OVER ==============");
