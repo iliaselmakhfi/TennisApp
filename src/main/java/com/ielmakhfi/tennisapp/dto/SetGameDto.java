@@ -1,15 +1,15 @@
 package com.ielmakhfi.tennisapp.dto;
 
-public class GameDto {
+public class SetGameDto {
 	
 	private int firstPlayerScore;
 	private int secondPlayerScore;
-	private String winnerName;
+	private PlayerDto winner;
 	
-	public GameDto() {
+	public SetGameDto() {
 		this.firstPlayerScore = 0;
 		this.secondPlayerScore = 0;
-		this.winnerName = null;
+		this.winner = null;
 	}
 
 	public int getFirstPlayerScore() {
@@ -28,12 +28,12 @@ public class GameDto {
 		this.secondPlayerScore = secondPlayerScore;
 	}
 
-	public String getWinnerName() {
-		return winnerName;
+	public PlayerDto getWinner() {
+		return winner;
 	}
 
-	public void setWinnerName(String winnerName) {
-		this.winnerName = winnerName;
+	public void setWinner(PlayerDto winner) {
+		this.winner = winner;
 	}
 	
 	public String showFirstPlayerScoreValue() {

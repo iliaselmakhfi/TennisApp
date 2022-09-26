@@ -11,34 +11,34 @@ public class MatchServiceImpl implements MatchService {
 	private static final String WIN = "Player %s win the match";
 	
 	@Override
-	public void updateWinnerGameIfGameOver(MatchDto match) {
-		long firstPlayerSetScore = match.getFirstPlayerSetScore();
-		long secondPlayerSetScore = match.getSecondPlayerSetScore();
+	public void updateWinnerMatchIfGameOver(MatchDto match) {
+		long firstPlayerSetScore = match.getFirstPlayerMatchScore();
+		long secondPlayerSetScore = match.getSecondPlayerMatchScore();
 		if((firstPlayerSetScore == 6 && secondPlayerSetScore <= 4 ) || ((firstPlayerSetScore-secondPlayerSetScore) == 2 && firstPlayerSetScore > 6 )) {
-			match.setWinnerName(match.getFirstPlayerName());
+			match.setWinner(match.getFirstPlayer());
 		} else if((firstPlayerSetScore <= 4  && secondPlayerSetScore == 6 ) || ((secondPlayerSetScore-firstPlayerSetScore) == 2 && secondPlayerSetScore > 6 ) ) {
-			match.setWinnerName(match.getSecondPlayerName());
+			match.setWinner(match.getSecondPlayer());
 		}
 	}
 	
 	@Override
-	public void displayScoreMatch(MatchDto match) {
+	public void displayMatchScore(MatchDto match) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Match score : ( ");
-		sb.append(match.getFirstPlayerName());
+		sb.append(match.getFirstPlayer().getName());
 		sb.append(" : ");
-		sb.append(match.getFirstPlayerSetScore());
+		sb.append(match.getFirstPlayerMatchScore());
 		sb.append(" / ");
-		sb.append(match.getSecondPlayerName());
+		sb.append(match.getSecondPlayer().getName());
 		sb.append(" : ");
-		sb.append(match.getSecondPlayerSetScore());
+		sb.append(match.getSecondPlayerMatchScore());
 		sb.append(" )");
 		System.out.println(sb.toString());
 	}
 
 	@Override
 	public void displayWinner(MatchDto match) {
-		System.out.println(String.format(WIN, match.getWinnerName()));
+		System.out.println(String.format(WIN, match.getWinner().getName()));
 	}
 
 }

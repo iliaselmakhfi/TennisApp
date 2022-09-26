@@ -5,18 +5,18 @@ import com.ielmakhfi.tennisapp.dto.MatchDto;
 public interface MatchService {
 	
 	/**
-	 * Update winner game if game over
+	 * Update winner Match if game over
 	 *
 	 * @param match the current tennis match.
 	 */
-	public void updateWinnerGameIfGameOver(MatchDto match);
+	public void updateWinnerMatchIfGameOver(MatchDto match);
 	
 	/**
 	 * Display Match score.
 	 *
-	 * @param match the current tennis match.
+	 * @param match the current tennis Match.
 	 */
-	public void displayScoreMatch(MatchDto match);
+	public void displayMatchScore(MatchDto match);
 	
 	/**
 	 * Display winner of the Match.
